@@ -9,12 +9,14 @@ import ClientDashboard from './pages/ClientDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminCars from './pages/AdminCars';
 import AdminBookings from './pages/AdminBookings';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
-        {/* Routes Publiques }
+        {/* Routes Publiques / Clients */}
         <Route path="/" element={<Home />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/cars/:id" element={<CarDetails />} />
