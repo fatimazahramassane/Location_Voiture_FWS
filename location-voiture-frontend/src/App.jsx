@@ -11,6 +11,7 @@ import AdminCars from './pages/AdminCars';
 import AdminBookings from './pages/AdminBookings';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Booking from './pages/Booking';
 function App() {
   return (
     <Router>
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/cars/:id" element={<CarDetails />} />
+        <Route path="/booking/:carId" element={<Booking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/client-dashboard" element={<ClientDashboard />} />
 

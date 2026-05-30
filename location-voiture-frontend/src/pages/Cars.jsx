@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaGasPump, FaCogs, FaSearch, FaSlidersH, FaFilter } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // IMPORT AJOUTÉ ICI
+import { FaGasPump, FaCogs, FaSearch } from 'react-icons/fa';
 import { mockCarsDatabase } from '../data/carsData';
 
 function Cars() {
@@ -218,19 +219,22 @@ function Cars() {
                     <span style={{ fontSize: '24px', fontWeight: '900', color: 'var(--home-text)' }}>{car.dailyRate} DH</span>
                     <span style={{ fontSize: '13px', color: 'var(--home-desc)' }}> / jour</span>
                   </div>
-                  <button style={{
-                    background: car.status === 'AVAILABLE' ? 'var(--card-inline)' : '#334155',
-                    border: '1px solid var(--border-color)',
-                    color: car.status === 'AVAILABLE' ? 'var(--home-text)' : '#94a3b8',
-                    padding: '10px 20px',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    fontWeight: '700',
-                    cursor: car.status === 'AVAILABLE' ? 'pointer' : 'not-allowed',
-                    outline: 'none'
-                  }} disabled={car.status !== 'AVAILABLE'}>
+                  <Link 
+                    to={car.status === 'AVAILABLE' ? `/booking/${car.id}` : '#'}
+                    style={{
+                      background: car.status === 'AVAILABLE' ? '#f59e0b' : '#334155',
+                      color: car.status === 'AVAILABLE' ? '#0f172a' : '#94a3b8',
+                      padding: '10px 20px',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      textDecoration: 'none',
+                      pointerEvents: car.status === 'AVAILABLE' ? 'auto' : 'none',
+                      display: 'inline-block'
+                    }} 
+                  >
                     {car.status === 'AVAILABLE' ? 'Réserver' : 'Indisponible'}
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
