@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Booking from './pages/Booking';
 import MyRentals from './pages/MyRentals';
+import Agencies from './pages/Agencies';
 function App() {
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/my-rentals" element={<MyRentals />} />
         <Route path="/car-details/:carId" element={<CarDetails />} />
+        <Route path="/agencies" element={<Agencies />} />
 
         {/* Routes Administration */}
         <Route path="/admin" element={<AdminDashboard />} />

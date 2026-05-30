@@ -15,7 +15,8 @@ export const mockCarsDatabase = [
     numberOfSeats: 5,
     hasAirConditioning: true,
     hasGPS: true,
-    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=60'
+    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=60',
+    agencyId: 1
   },
   {
     id: 2,
@@ -33,7 +34,8 @@ export const mockCarsDatabase = [
     numberOfSeats: 5,
     hasAirConditioning: true,
     hasGPS: false,
-    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=500&auto=format&fit=crop&q=60'
+    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=500&auto=format&fit=crop&q=60',
+    agencyId: 2
   },
   {
     id: 3,
@@ -51,7 +53,8 @@ export const mockCarsDatabase = [
     numberOfSeats: 7,
     hasAirConditioning: true,
     hasGPS: true,
-    image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=500&auto=format&fit=crop&q=60'
+    image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=500&auto=format&fit=crop&q=60',
+    agencyId: 1,
   },
   {
     id: 4,
@@ -119,5 +122,28 @@ export const mockRentalsDatabase = [
       model: 'Caravan',
       registrationPlate: '9101-C-26'
     }
+    
+  }
+];
+
+
+export let mockAgenciesDatabase = [
+  {
+    id: 1,
+    name: "Agence Atlas Casablanca",
+    address: "Boulevard Mohammed V, N° 45",
+    city: "Casablanca",
+    state: "Grand Casablanca",
+    phone: "+212 522 123 456",
+    email: "contact.casa@atlascar.ma"
+  },
+  {
+    id: 2,
+    name: "Agence Atlas Marrakech",
+    address: "Avenue Mohammed VI, Géliz",
+    city: "Marrakech",
+    state: "Marrakech-Safi",
+    phone: "+212 524 987 654",
+    email: "contact.kech@atlascar.ma"
   }
 ];
