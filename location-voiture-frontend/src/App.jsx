@@ -10,7 +10,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminCars from './pages/AdminCars';
 import AdminBookings from './pages/AdminBookings';
 import Navbar from './components/Navbar';
-
+import Footer from './components/Footer';
 function App() {
   return (
     <Router>
@@ -28,7 +28,9 @@ function App() {
         <Route path="/admin/cars" element={<AdminCars />} />
         <Route path="/admin/bookings" element={<AdminBookings />} />
       </Routes>
+      <Footer />
     </Router>
+
   );
 }
 
