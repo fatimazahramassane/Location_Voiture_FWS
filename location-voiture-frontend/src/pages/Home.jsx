@@ -2,44 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaCarSide, FaCalendarAlt, FaKey, FaClock, FaShieldAlt, FaTimesCircle, FaCoins, FaGasPump, FaCogs } from 'react-icons/fa';
 import carHomeImg from '../assets/car_home.jpg'; 
-
-const mockCars = [
-  {
-    id: 1,
-    brand: 'Dacia',
-    model: 'Sandero Stepway',
-    year: 2024,
-    dailyRate: 350.0,
-    fuelType: 'DIESEL',
-    transmission: 'MANUAL',
-    status: 'AVAILABLE',
-    image: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=500&auto=format&fit=crop&q=60'
-  },
-  {
-    id: 2,
-    brand: 'Hyundai',
-    model: 'Tucson',
-    year: 2025,
-    dailyRate: 600.0,
-    fuelType: 'HYBRID',
-    transmission: 'AUTOMATIC',
-    status: 'AVAILABLE',
-    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&auto=format&fit=crop&q=60'
-  },
-  {
-    id: 3,
-    brand: 'Volkswagen',
-    model: 'Golf 8',
-    year: 2024,
-    dailyRate: 500.0,
-    fuelType: 'GASOLINE',
-    transmission: 'AUTOMATIC',
-    status: 'AVAILABLE',
-    image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=500&auto=format&fit=crop&q=60'
-  }
-];
+import { mockCarsDatabase } from '../data/carsData';
 
 function Home() {
+  const featuredCars = mockCarsDatabase.slice(0, 3);
+
   return (
     <div style={{
       minHeight: 'calc(100vh - 60px)',
@@ -269,7 +236,6 @@ function Home() {
         </div>
       </div>
 
-      {/* SECTION NOUVEAUTÉS : CARS DOCK DATA */}
       <div style={{
         padding: '100px 10%',
         background: 'var(--home-bg)',
@@ -290,7 +256,7 @@ function Home() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-          {mockCars.map((car) => (
+          {featuredCars.map((car) => (
             <div key={car.id} style={{
               background: 'var(--card-background)',
               borderRadius: '24px',
@@ -306,7 +272,7 @@ function Home() {
                   position: 'absolute',
                   top: '15px',
                   right: '15px',
-                  background: '#10b981',
+                  background: car.status === 'AVAILABLE' ? '#10b981' : '#ef4444',
                   color: '#fff',
                   padding: '6px 12px',
                   borderRadius: '8px',
