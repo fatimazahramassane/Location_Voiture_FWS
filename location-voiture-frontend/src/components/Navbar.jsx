@@ -15,12 +15,21 @@ function Navbar() {
 
   return (
     <nav style={{
-      display: 'flex', 
-      justifyContent: 'space-between', 
-      padding: '15px', 
-      borderBottom: '1px solid var(--border-color)',
-      backgroundColor: 'var(--card-background)'
-    }}>
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '90%',
+  height: '60px',
+  zIndex: 1000,
+  background: 'var(--card-background)', 
+  borderBottom: '1px solid var(--border-color)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '0 10%',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+  transition: 'background 0.3s ease'
+}}>
       <div>
         <strong style={{ color: 'var(--primary-color)', fontSize: '20px' }}>Clic&Roule</strong>
       </div>
