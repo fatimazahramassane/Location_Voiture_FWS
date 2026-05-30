@@ -12,6 +12,7 @@ import AdminBookings from './pages/AdminBookings';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Booking from './pages/Booking';
+import MyRentals from './pages/MyRentals';
 function App() {
   return (
     <Router>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/booking/:carId" element={<Booking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/client-dashboard" element={<ClientDashboard />} />
+        <Route path="/my-rentals" element={<MyRentals />} />
 
         {/* Routes Administration */}
         <Route path="/admin" element={<AdminDashboard />} />

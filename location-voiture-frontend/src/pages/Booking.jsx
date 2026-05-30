@@ -7,16 +7,13 @@ function Booking() {
   const { carId } = useParams();
   const navigate = useNavigate();
   
-  // Trouver la voiture sélectionnée
   const car = mockCarsDatabase.find(c => c.id === parseInt(carId));
 
-  // États pour le formulaire
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [pickupLocation, setPickupLocation] = useState('Aéroport Mohammed V - Casablanca');
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // Calcul du prix total automatique lorsque les dates changent
   useEffect(() => {
     if (startDate && endDate && car) {
       const start = new Date(startDate);
@@ -43,7 +40,6 @@ function Booking() {
       return;
     }
     
-    // Simulation de création de réservation avant couplage backend
     alert(`Réservation enregistrée avec succès pour la ${car.brand} ${car.model} ! Total : ${totalPrice} DH`);
     navigate('/cars');
   };
@@ -63,7 +59,6 @@ function Booking() {
 
       <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
         
-        {/* Formulaire de réservation */}
         <form onSubmit={handleSubmit} style={{
           flex: '1.5',
           background: 'var(--card-background)',
@@ -137,7 +132,6 @@ function Booking() {
           </button>
         </form>
 
-        {/* Récapitulatif du véhicule et du prix */}
         <div style={{
           flex: '1',
           background: 'var(--card-background)',

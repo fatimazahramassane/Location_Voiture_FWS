@@ -90,3 +90,34 @@ export const mockCarsDatabase = [
     image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=500&auto=format&fit=crop&q=60'
   }
 ];
+
+
+
+export const mockRentalsDatabase = [
+  {
+    id: 101,
+    startDate: '2026-06-01',
+    endDate: '2026-06-05',
+    actualReturnDate: null,
+    status: 'PENDING',
+    totalCost: 1800.0,
+    car: {
+      brand: 'Toyota',
+      model: 'Cruiser',
+      registrationPlate: '1234-A-26'
+    }
+  },
+  {
+    id: 102,
+    startDate: '2026-05-10',
+    endDate: '2026-05-15',
+    actualReturnDate: '2026-05-15',
+    status: 'COMPLETED',
+    totalCost: 2600.0,
+    car: {
+      brand: 'Dodge',
+      model: 'Caravan',
+      registrationPlate: '9101-C-26'
+    }
+  }
+];
