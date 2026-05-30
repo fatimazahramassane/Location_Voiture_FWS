@@ -21,11 +21,11 @@ function App() {
         {/* Routes Publiques / Clients */}
         <Route path="/" element={<Home />} />
         <Route path="/cars" element={<Cars />} />
-        <Route path="/cars/:id" element={<CarDetails />} />
         <Route path="/booking/:carId" element={<Booking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/my-rentals" element={<MyRentals />} />
+        <Route path="/car-details/:carId" element={<CarDetails />} />
 
         {/* Routes Administration */}
         <Route path="/admin" element={<AdminDashboard />} />

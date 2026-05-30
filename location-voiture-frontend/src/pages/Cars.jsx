@@ -220,21 +220,20 @@ function Cars() {
                     <span style={{ fontSize: '13px', color: 'var(--home-desc)' }}> / jour</span>
                   </div>
                   <Link 
-                    to={car.status === 'AVAILABLE' ? `/booking/${car.id}` : '#'}
-                    style={{
-                      background: car.status === 'AVAILABLE' ? '#f59e0b' : '#334155',
-                      color: car.status === 'AVAILABLE' ? '#0f172a' : '#94a3b8',
-                      padding: '10px 20px',
-                      borderRadius: '12px',
-                      fontSize: '14px',
-                      fontWeight: '700',
-                      textDecoration: 'none',
-                      pointerEvents: car.status === 'AVAILABLE' ? 'auto' : 'none',
-                      display: 'inline-block'
-                    }} 
-                  >
-                    {car.status === 'AVAILABLE' ? 'Réserver' : 'Indisponible'}
-                  </Link>
+  to={`/car-details/${car.id}`}
+  style={{
+    background: '#f59e0b',
+    color: '#0f172a',
+    padding: '10px 20px',
+    borderRadius: '12px',
+    fontSize: '14px',
+    fontWeight: '700',
+    textDecoration: 'none',
+    display: 'inline-block'
+  }}
+>
+  Détails
+</Link>
                 </div>
               </div>
             </div>
