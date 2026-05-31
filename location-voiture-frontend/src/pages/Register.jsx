@@ -30,7 +30,6 @@ const Register = () => {
             return;
         }
 
-        // Hna l-farq sghir: l-body matchi m3a RegisterRequest.java d l-backend
         const requestBody = {
             username: formData.username,
             password: formData.password,
@@ -54,7 +53,6 @@ const Register = () => {
 
             setSuccess('Account created successfully! Redirecting...');
             
-            // 7iydna d-dik localStorage li kant hna hit l-backend ma-kay-seftch token f register
             setTimeout(() => {
                 navigate('/login');
             }, 2000);

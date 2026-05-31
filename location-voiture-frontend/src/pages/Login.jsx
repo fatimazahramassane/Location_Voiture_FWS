@@ -22,13 +22,12 @@ const Login = () => {
         setSuccess('');
 
         try {
-            // L-url exact d l-login dyal AuthenticationController.java
             const response = await fetch('http://localhost:8080/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), // matching m3a LoginRequest.java (username, password)
+                body: JSON.stringify(formData), 
             });
 
             const data = await response.json();
@@ -39,13 +38,11 @@ const Login = () => {
 
             setSuccess('Connexion réussie !');
 
-            // Sauvegarde exact de AuthResponse
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.username);
             localStorage.setItem('role', data.role);
 
             setTimeout(() => {
-                // Redirection intelligent 3la 7sab l-role
                 if (data.role === 'ADMIN' || data.role === 'ROLE_ADMIN') {
                     navigate('/admin/dashboard');
                 } else {
