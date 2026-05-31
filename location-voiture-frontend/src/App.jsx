@@ -25,7 +25,7 @@ function App() {
         <Route path="/cars" element={<Cars />} />
         <Route path="/booking/:carId" element={<Booking />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/client-dashboard" element={<ClientDashboard />} />
+        <Route path="/user/dashboard" element={<ClientDashboard />} />
         <Route path="/my-rentals" element={<MyRentals />} />
         <Route path="/car-details/:carId" element={<CarDetails />} />
         <Route path="/agencies" element={<Agencies />} />
