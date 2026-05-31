@@ -161,6 +161,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<CarResponse> getAvailableCars() {
+        return carRepository.findByStatus(Car.CarStatus.AVAILABLE).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean checkAvailability(Long carId, LocalDate start, LocalDate end) {
         validateDateRange(start, end);
         Car car = findCarOrThrow(carId);

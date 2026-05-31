@@ -42,6 +42,18 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
                              @Param("startDate") LocalDate startDate,
                              @Param("endDate") LocalDate endDate);
 
+    @Query("""
+        SELECT COUNT(r) > 0 FROM Rental r
+        WHERE r.car.id = :carId
+        AND r.id <> :rentalId
+        AND r.status NOT IN ('CANCELLED', 'COMPLETED')
+        AND (r.startDate < :endDate AND r.endDate > :startDate)
+    """)
+    boolean isCarUnavailableExcludingRental(@Param("carId") Long carId,
+                                            @Param("startDate") LocalDate startDate,
+                                            @Param("endDate") LocalDate endDate,
+                                            @Param("rentalId") Long rentalId);
+
     @Query("SELECT r FROM Rental r WHERE r.status = 'ACTIVE' AND r.endDate < :today")
     List<Rental> findOverdue(@Param("today") LocalDate today);
 

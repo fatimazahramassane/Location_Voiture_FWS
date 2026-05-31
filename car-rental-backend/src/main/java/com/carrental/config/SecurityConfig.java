@@ -45,20 +45,29 @@ public class SecurityConfig {
                 // Public
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                 // Public reads
                 .requestMatchers(HttpMethod.GET, "/api/agencies/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cars/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/vehicles/**").permitAll()
 
                 // Admin-only writes
                 .requestMatchers(HttpMethod.POST, "/api/agencies/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/agencies/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/agencies/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasAnyRole("ADMIN", "MANAGER")
 
                 // Admin or Manager for car writes
                 .requestMatchers(HttpMethod.POST, "/api/cars/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.PUT, "/api/cars/**").hasAnyRole("ADMIN", "MANAGER")
+
+                // Vehicle writes
+                .requestMatchers(HttpMethod.POST, "/api/vehicles/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/vehicles/**").hasAnyRole("ADMIN", "MANAGER")
+
+                // User profile
+                .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
 
                 // Rentals: authenticated users
                 .requestMatchers("/api/rentals/**").authenticated()

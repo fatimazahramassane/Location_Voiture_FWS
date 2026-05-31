@@ -2,6 +2,7 @@ package com.carrental.service.impl;
 
 import com.carrental.dto.RentalRequest;
 import com.carrental.dto.RentalResponse;
+import com.carrental.dto.UpdateStatusRequest;
 import com.carrental.entity.AppUser;
 import com.carrental.entity.Car;
 import com.carrental.entity.Rental;
@@ -13,6 +14,7 @@ import com.carrental.repository.RentalRepository;
 import com.carrental.service.CarService;
 import com.carrental.service.RentalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,11 @@ public class RentalServiceImpl implements RentalService {
         }
         return appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    }
+
+    private AppUser findUserByAuthentication(Authentication authentication) {
+        return appUserRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     private void validateDateRange(LocalDate start, LocalDate end) {
@@ -174,6 +181,13 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    public RentalResponse createRental(RentalRequest request, Authentication authentication) {
+        AppUser user = findUserByAuthentication(authentication);
+        request.setUserId(user.getId());
+        return createRental(request);
+    }
+
+    @Override
     public RentalResponse updateRental(Long id, RentalRequest request) {
         Rental rental = findRentalOrThrow(id);
         ensureRentalIsModifiable(rental);
@@ -203,5 +217,30 @@ public class RentalServiceImpl implements RentalService {
         return rentalRepository.findHistoryByUser(userId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RentalResponse> getMyRentals(Authentication authentication) {
+        AppUser user = findUserByAuthentication(authentication);
+        return getRentalsByUserId(user.getId());
+    }
+
+    @Override
+    public RentalResponse updateStatus(Long id, UpdateStatusRequest request) {
+        Rental rental = findRentalOrThrow(id);
+        Rental.RentalStatus newStatus = request.getStatus();
+
+        if (newStatus == Rental.RentalStatus.CANCELLED) {
+            cancelRental(id);
+            return mapToResponse(findRentalOrThrow(id));
+        }
+
+        rental.setStatus(newStatus);
+        if (newStatus == Rental.RentalStatus.COMPLETED && rental.getActualReturnDate() == null) {
+            rental.setActualReturnDate(LocalDate.now());
+        }
+
+        return mapToResponse(rentalRepository.save(rental));
     }
 }
