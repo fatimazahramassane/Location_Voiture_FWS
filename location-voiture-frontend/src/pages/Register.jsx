@@ -30,12 +30,13 @@ const Register = () => {
             return;
         }
 
+        // Hna l-farq sghir: l-body matchi m3a RegisterRequest.java d l-backend
         const requestBody = {
             username: formData.username,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
+            password: formData.password,
             email: formData.email,
-            password: formData.password
+            firstName: formData.firstName,
+            lastName: formData.lastName
         };
 
         try {
@@ -47,20 +48,13 @@ const Register = () => {
                 body: JSON.stringify(requestBody),
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.error || 'Registration failed');
+                throw new Error("L'inscription a échoué.");
             }
 
             setSuccess('Account created successfully! Redirecting...');
             
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('role', data.role);
-            }
-
+            // 7iydna d-dik localStorage li kant hna hit l-backend ma-kay-seftch token f register
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
