@@ -78,8 +78,8 @@ const Register = () => {
                 </div>
 
                 <div className="clic-auth-card">
-                    {error && <div className="error-message" style={{color: '#ff4d4d', marginBottom: '15px', fontSize: '14px'}}>{error}</div>}
-                    {success && <div className="success-message" style={{color: '#2ec4b6', marginBottom: '15px', fontSize: '14px'}}>{success}</div>}
+                    {error && <div className="error-message">{error}</div>}
+                    {success && <div className="success-message">{success}</div>}
                     
                     <form onSubmit={handleSubmit} className="clic-auth-form">
                         <div className="clic-input-wrapper">
@@ -89,6 +89,18 @@ const Register = () => {
                                 name="username"
                                 placeholder="Username"
                                 value={formData.username}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="clic-input-wrapper">
+                            <span className="clic-input-icon">✉</span>
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email address"
+                                value={formData.email}
                                 onChange={handleChange}
                                 required
                             />
@@ -113,18 +125,6 @@ const Register = () => {
                                 name="lastName"
                                 placeholder="Last Name"
                                 value={formData.lastName}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="clic-input-wrapper">
-                            <span className="clic-input-icon">✉</span>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Email address"
-                                value={formData.email}
                                 onChange={handleChange}
                                 required
                             />

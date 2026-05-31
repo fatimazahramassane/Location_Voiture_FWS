@@ -1,203 +1,156 @@
 .clic-auth-bg {
     width: 100%;
     min-height: 100vh;
-    position: relative;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: url('https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=1920') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
 }
 
 .clic-auth-overlay {
     width: 100%;
     min-height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     padding: 20px;
     box-sizing: border-box;
 }
 
-.light .clic-auth-overlay {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.dark .clic-auth-overlay {
-    background: rgba(0, 0, 0, 0.35);
-}
-
 .clic-auth-header {
     text-align: center;
-    margin-bottom: 25px;
-    z-index: 2;
+    color: #ffffff;
+    margin-bottom: 20px;
 }
 
 .clic-auth-header h1 {
     font-size: 24px;
-    font-weight: 500;
     margin: 0 0 8px 0;
-    letter-spacing: 0.5px;
-}
-
-.light .clic-auth-header h1 {
-    color: #111111;
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
-}
-
-.dark .clic-auth-header h1 {
-    color: #ffffff;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+    font-weight: 500;
 }
 
 .clic-brand-logo {
+    font-size: 36px;
+    font-weight: 700;
     color: #ff4d4d;
-    font-size: 48px;
-    font-weight: 800;
-    letter-spacing: -1px;
-}
-
-.clic-brand-logo span {
-    color: #ffcc00;
 }
 
 .clic-auth-card {
-    border-radius: 30px;
-    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 32px;
     width: 100%;
-    max-width: 380px;
+    max-width: 650px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
-    z-index: 2;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-.light .clic-auth-card {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.dark .clic-auth-card {
-    background: rgba(20, 20, 20, 0.65);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .clic-auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .clic-input-wrapper {
     position: relative;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    padding: 0 16px;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+    height: 50px;
 }
 
 .clic-input-icon {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
     font-size: 18px;
-    color: #ffcc00;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    z-index: 3;
-}
-
-.clic-email-icon {
-    color: #ffcc00 !important;
-    -webkit-text-fill-color: #ffcc00; 
+    color: #555555;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
 }
 
 .clic-input-wrapper input {
-    width: 100%;
-    padding: 16px 20px 16px 50px;
+    flex: 1;
     border: none;
-    border-radius: 50px;
+    background: transparent;
+    height: 100%;
     font-size: 15px;
-    font-weight: 500;
-    box-sizing: border-box;
     outline: none;
-}
-
-.light .clic-input-wrapper input {
-    background: #f0f2f5;
-    color: #111111;
-    border: 1px solid #dddddd;
-}
-
-.dark .clic-input-wrapper input {
-    background: #e9e9e9;
-    color: #111111;
+    color: #222222;
 }
 
 .clic-input-wrapper input::placeholder {
-    font-weight: 500;
-    color: #666666;
+    color: #777777;
 }
 
 .clic-auth-actions {
-    margin-top: 10px;
-    display: flex;
-    width: 100%;
+    grid-column: span 2;
+    margin-top: 8px;
 }
 
-.full-width-btn {
+.clic-btn-primary.full-width-btn {
     width: 100%;
-    border: none;
-    padding: 16px;
-    border-radius: 50px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-}
-
-.light .full-width-btn {
     background: #ff4d4d;
-    color: #ffffff;
+    color: white;
+    border: none;
+    height: 50px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.light .full-width-btn:hover {
-    background: #e63939;
+.clic-btn-primary.full-width-btn:hover {
+    background: #e04343;
 }
-
-.dark .full-width-btn {
-    background: #e9e9e9;
-    color: #111111;
-}
-
-.dark .full-width-btn:hover {
-    background: #ffffff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-
 
 .clic-auth-redirect {
+    grid-column: span 2;
     text-align: center;
-    margin-top: 20px;
-}
-
-.clic-auth-redirect p {
+    margin-top: 16px;
     font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.light .clic-auth-redirect p {
-    color: #555555;
-}
-
-.dark .clic-auth-redirect p {
-    color: #cccccc;
+    color: #ffffff;
 }
 
 .clic-auth-redirect a {
     color: #ff4d4d;
     text-decoration: none;
-    font-weight: 700;
-    margin-left: 5px;
-    transition: color 0.2s, text-decoration 0.2s;
+    font-weight: 600;
 }
 
-.clic-auth-redirect a:hover {
-    color: #ffcc00;
-    text-decoration: underline;
+.error-message {
+    grid-column: span 2;
+    text-align: center;
+    color: #ff4d4d;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.success-message {
+    grid-column: span 2;
+    text-align: center;
+    color: #2ec4b6;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .clic-auth-form {
+        grid-template-columns: 1fr;
+    }
+    .clic-auth-actions, .clic-auth-redirect, .error-message, .success-message {
+        grid-column: span 1;
+    }
+    .clic-auth-card {
+        max-width: 100%;
+        padding: 24px;
+    }
 }
