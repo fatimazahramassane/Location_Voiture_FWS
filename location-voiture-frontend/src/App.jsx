@@ -31,7 +31,7 @@ function App() {
         <Route path="/agencies" element={<Agencies />} />
 <Route path="/register" element={<Register />} />
         {/* Routes Administration */}
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/cars" element={<AdminCars />} />
         <Route path="/admin/bookings" element={<AdminBookings />} />
       </Routes>

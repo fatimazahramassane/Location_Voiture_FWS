@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCar, FaClipboardList, FaPlus, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { mockCarsDatabase, mockRentalsDatabase } from '../data/carsData';
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('cars');
-  const [cars, setCars] = useState(mockCarsDatabase);
-  const [rentals, setRentals] = useState(mockRentalsDatabase);
+  const [cars, setCars] = useState([]);
+  const [rentals, setRentals] = useState([]);
 
   const [newCar, setNewCar] = useState({
     brand: '', model: '', year: 2026, dailyRate: '',
@@ -14,43 +13,56 @@ function AdminDashboard() {
     numberOfDoors: 4, numberOfSeats: 5, hasAirConditioning: true, hasGPS: true
   });
 
-  const handleAddCar = (e) => {
+  const fetchData = async () => {
+    const headers = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
+    try {
+      const [carsRes, rentalsRes] = await Promise.all([
+        fetch('http://localhost:8080/api/cars', { headers }),
+        fetch('http://localhost:8080/api/rentals', { headers })
+      ]);
+      if (carsRes.ok) setCars(await carsRes.json());
+      if (rentalsRes.ok) setRentals(await rentalsRes.json());
+    } catch (err) {
+      console.error("Erreur API:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleAddCar = async (e) => {
     e.preventDefault();
-    const carToAdd = {
-      id: Date.now(),
-      ...newCar,
-      dailyRate: parseFloat(newCar.dailyRate),
-      year: parseInt(newCar.year),
-      mileage: parseFloat(newCar.mileage || 0),
-      numberOfDoors: parseInt(newCar.numberOfDoors),
-      numberOfSeats: parseInt(newCar.numberOfSeats)
-    };
-    
-    mockCarsDatabase.push(carToAdd);
-    setCars([...mockCarsDatabase]);
-    
-    setNewCar({
-      brand: '', model: '', year: 2026, dailyRate: '',
-      fuelType: 'GASOLINE', transmission: 'AUTOMATIC', status: 'AVAILABLE',
-      registrationPlate: '', mileage: '', vin: '', color: '',
-      numberOfDoors: 4, numberOfSeats: 5, hasAirConditioning: true, hasGPS: true
+    await fetch('http://localhost:8080/api/cars', {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify(newCar)
     });
+    setNewCar({ brand: '', model: '', year: 2026, dailyRate: '', fuelType: 'GASOLINE', transmission: 'AUTOMATIC', status: 'AVAILABLE', registrationPlate: '', mileage: '', vin: '', color: '', numberOfDoors: 4, numberOfSeats: 5, hasAirConditioning: true, hasGPS: true });
+    fetchData();
   };
 
-  const handleDeleteCar = (id) => {
-    const index = mockCarsDatabase.findIndex(c => c.id === id);
-    if (index !== -1) {
-      mockCarsDatabase.splice(index, 1);
-      setCars([...mockCarsDatabase]);
-    }
+  const handleDeleteCar = async (id) => {
+    await fetch(`http://localhost:8080/api/cars/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    fetchData();
   };
 
-  const handleUpdateRentalStatus = (rentalId, newStatus) => {
-    const rental = mockRentalsDatabase.find(r => r.id === rentalId);
-    if (rental) {
-      rental.status = newStatus;
-      setRentals([...mockRentalsDatabase]);
-    }
+  const handleUpdateRentalStatus = async (rentalId, newStatus) => {
+    await fetch(`http://localhost:8080/api/rentals/${rentalId}/status`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+    fetchData();
   };
 
   return (
@@ -150,7 +162,7 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {cars.map(car => (
+                {cars.slice(0,22).map(car => (
                   <tr key={car.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                     <td style={{ padding: '16px 0', fontWeight: '700' }}>{car.brand} {car.model} ({car.year})</td>
                     <td style={{ padding: '16px 0' }}>{car.registrationPlate}</td>
@@ -190,7 +202,7 @@ function AdminDashboard() {
               {rentals.map(rental => (
                 <tr key={rental.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '16px 0' }}>#{rental.id}</td>
-                  <td style={{ padding: '16px 0', fontWeight: '700' }}>{rental.car.brand} {rental.car.model}</td>
+                  <td style={{ padding: '16px 0', fontWeight: '700' }}>{rental.carBrand} {rental.carModel}</td>
                   <td style={{ padding: '16px 0', fontSize: '14px' }}>{rental.startDate} au {rental.endDate}</td>
                   <td style={{ padding: '16px 0', fontWeight: '700', color: '#f59e0b' }}>{rental.totalCost} DH</td>
                   <td style={{ padding: '16px 0' }}>
