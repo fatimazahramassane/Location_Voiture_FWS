@@ -20,5 +20,7 @@ public interface CarService {
 
     List<CarResponse> getAvailableCars(LocalDate start, LocalDate end);
 
+    List<CarResponse> getAvailableCars();
+
     boolean checkAvailability(Long carId, LocalDate start, LocalDate end);
 }
