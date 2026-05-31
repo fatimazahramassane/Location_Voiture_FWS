@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';   
+import { Link, useNavigate } from 'react-router-dom'; 
 import './Login.css';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
-        email: '',
+        username: '',
         password: ''
     });
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,9 +18,33 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Formulaire soumis', credentials);
+        setError('');
+        
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Authentication failed');
+            }
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('role', data.role);
+
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
     return (
@@ -30,14 +56,16 @@ const Login = () => {
                 </div>
 
                 <div className="clic-auth-card">
+                    {error && <div className="error-message" style={{color: '#ff4d4d', marginBottom: '15px', fontSize: '14px'}}>{error}</div>}
+                    
                     <form onSubmit={handleSubmit} className="clic-auth-form">
                         <div className="clic-input-wrapper">
-                            <span className="clic-input-icon clic-email-icon">✉</span>
+                            <span className="clic-input-icon">👤</span>
                             <input
-                                type="email"
-                                name="email"
-                                placeholder="Email adress"
-                                value={credentials.email}
+                                type="text"
+                                name="username"
+                                placeholder="Username"
+                                value={credentials.username}
                                 onChange={handleChange}
                                 required
                             />

@@ -1,27 +1,72 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 import './Register.css';
 
 const Register = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        fullName: '',
+        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         confirmPassword: ''
     });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setSuccess('');
+
         if (formData.password !== formData.confirmPassword) {
-            alert("Les mots de passe ne correspondent pas !");
+            setError("Les mots de passe ne correspondent pas !");
             return;
         }
-        console.log('Inscription:', formData);
+
+        const requestBody = {
+            username: formData.username,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Registration failed');
+            }
+
+            setSuccess('Account created successfully! Redirecting...');
+            
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('role', data.role);
+            }
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
     return (
@@ -33,21 +78,48 @@ const Register = () => {
                 </div>
 
                 <div className="clic-auth-card">
+                    {error && <div className="error-message" style={{color: '#ff4d4d', marginBottom: '15px', fontSize: '14px'}}>{error}</div>}
+                    {success && <div className="success-message" style={{color: '#2ec4b6', marginBottom: '15px', fontSize: '14px'}}>{success}</div>}
+                    
                     <form onSubmit={handleSubmit} className="clic-auth-form">
                         <div className="clic-input-wrapper">
                             <span className="clic-input-icon">👤</span>
                             <input
                                 type="text"
-                                name="fullName"
-                                placeholder="Full Name"
-                                value={formData.fullName}
+                                name="username"
+                                placeholder="Username"
+                                value={formData.username}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
 
                         <div className="clic-input-wrapper">
-                            <span className="clic-input-icon clic-email-icon">✉</span>
+                            <span className="clic-input-icon">ℹ️</span>
+                            <input
+                                type="text"
+                                name="firstName"
+                                placeholder="First Name"
+                                value={formData.firstName}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="clic-input-wrapper">
+                            <span className="clic-input-icon">ℹ️</span>
+                            <input
+                                type="text"
+                                name="lastName"
+                                placeholder="Last Name"
+                                value={formData.lastName}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="clic-input-wrapper">
+                            <span className="clic-input-icon">✉</span>
                             <input
                                 type="email"
                                 name="email"
