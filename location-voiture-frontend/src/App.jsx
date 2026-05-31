@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import Booking from './pages/Booking';
 import MyRentals from './pages/MyRentals';
 import Agencies from './pages/Agencies';
+import Register from './pages/Register';
 function App() {
   return (
     <Router>
@@ -28,7 +29,7 @@ function App() {
         <Route path="/my-rentals" element={<MyRentals />} />
         <Route path="/car-details/:carId" element={<CarDetails />} />
         <Route path="/agencies" element={<Agencies />} />
-
+<Route path="/register" element={<Register />} />
         {/* Routes Administration */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/cars" element={<AdminCars />} />
