@@ -80,7 +80,7 @@ function AdminCars() {
         <table className="styled-table">
           <thead><tr><th>Marque</th><th>Modèle</th><th>Prix/Jour</th><th>Actions</th></tr></thead>
           <tbody>
-            {cars.slice(0.22).map(car => (
+            {cars.slice(0,22).map(car => (
               <tr key={car.id}>
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
