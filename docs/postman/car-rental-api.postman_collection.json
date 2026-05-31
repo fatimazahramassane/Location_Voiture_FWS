@@ -1,0 +1,914 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Car Rental API",
+    "description": "Collection Postman pour le frontend React - Car Rental System (Spring Boot 3)\n\n## Variables\n- `baseUrl` : URL du backend (défaut http://localhost:8080)\n- `token` : JWT (auto-rempli après Login)\n- `userId` : ID utilisateur (auto-rempli après Register/Profile)\n\n## Comptes seed (dev)\n| Username | Password | Rôle |\n|----------|----------|------|\n| admin | admin123 | ADMIN |\n| manager | manager123 | MANAGER |\n| user | user123 | USER |\n\n## Ordre recommandé\n1. Login User ou Register\n2. Get Profile\n3. Get Available Cars → noter un `carId`\n4. Create Rental\n5. My History",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "userId", "value": "1", "type": "string" },
+    { "key": "carId", "value": "1", "type": "string" },
+    { "key": "rentalId", "value": "1", "type": "string" },
+    { "key": "agencyId", "value": "1", "type": "string" },
+    { "key": "vehicleId", "value": "1", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "Inscription, connexion JWT et profil utilisateur",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const json = pm.response.json();",
+                  "    if (json.id) {",
+                  "        pm.collectionVariables.set('userId', json.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"salma_client\",\n  \"password\": \"password123\",\n  \"email\": \"salma@example.com\",\n  \"firstName\": \"Salma\",\n  \"lastName\": \"Frontend\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Inscrire un nouveau client (public, sans JWT)"
+          },
+          "response": []
+        },
+        {
+          "name": "Login (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains JWT token', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.token).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Connexion client (ROLE_USER) — remplit automatiquement {{token}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Connexion admin — pour tester les endpoints ADMIN/MANAGER"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    if (json.id) {",
+                  "        pm.collectionVariables.set('userId', json.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Profil de l'utilisateur connecté (JWT requis)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile (Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Test sans token — doit retourner 401"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cars",
+      "description": "Catalogue véhicules — lecture publique, écriture ADMIN/MANAGER",
+      "item": [
+        {
+          "name": "Get All Cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "",
+                  "const cars = pm.response.json();",
+                  "if (cars.length > 0 && cars[0].id) {",
+                  "    pm.collectionVariables.set('carId', cars[0].id);",
+                  "    if (cars[0].agencyId) {",
+                  "        pm.collectionVariables.set('agencyId', cars[0].agencyId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars"]
+            },
+            "description": "Liste complète des voitures (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const cars = pm.response.json();",
+                  "if (cars.length > 0 && cars[0].id) {",
+                  "    pm.collectionVariables.set('carId', cars[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/available",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "available"]
+            },
+            "description": "Voitures avec statut AVAILABLE (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Car By Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/{{carId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "{{carId}}"]
+            },
+            "description": "Détails d'une voiture avec agence (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('carId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla\",\n  \"year\": 2022,\n  \"vin\": \"1HGBH41JXMN109186\",\n  \"registrationPlate\": \"12345-A-67\",\n  \"mileage\": 15000.0,\n  \"dailyRate\": 350.0,\n  \"color\": \"Blanc\",\n  \"status\": \"AVAILABLE\",\n  \"fuelType\": \"GASOLINE\",\n  \"transmission\": \"AUTOMATIC\",\n  \"numberOfDoors\": 4,\n  \"numberOfSeats\": 5,\n  \"hasAirConditioning\": true,\n  \"hasGPS\": true,\n  \"titleStatus\": \"clean\",\n  \"originState\": \"Casablanca\",\n  \"agencyId\": {{agencyId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cars",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars"]
+            },
+            "description": "Créer une voiture — ADMIN ou MANAGER requis"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla Hybrid\",\n  \"year\": 2022,\n  \"registrationPlate\": \"12345-A-67\",\n  \"mileage\": 18000.0,\n  \"dailyRate\": 400.0,\n  \"color\": \"Gris\",\n  \"status\": \"AVAILABLE\",\n  \"fuelType\": \"HYBRID\",\n  \"transmission\": \"AUTOMATIC\",\n  \"numberOfDoors\": 4,\n  \"numberOfSeats\": 5,\n  \"hasAirConditioning\": true,\n  \"hasGPS\": true,\n  \"agencyId\": {{agencyId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/{{carId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "{{carId}}"]
+            },
+            "description": "Mettre à jour une voiture — ADMIN ou MANAGER requis"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/{{carId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "{{carId}}"]
+            },
+            "description": "Supprimer une voiture — ADMIN ou MANAGER requis"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rentals",
+      "description": "Réservations — authentification requise ; admin pour liste globale et changement de statut",
+      "item": [
+        {
+          "name": "Create Rental",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('rentalId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-06-10\",\n  \"endDate\": \"2026-06-15\",\n  \"customerName\": \"Salma Frontend\",\n  \"customerEmail\": \"salma@example.com\",\n  \"customerPhone\": \"+212 600-000-000\",\n  \"customerLicenseNumber\": \"MA-123456\",\n  \"notes\": \"Réservation test depuis Postman\",\n  \"carId\": {{carId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals"]
+            },
+            "description": "Nouvelle demande de location — l'utilisateur connecté est associé automatiquement"
+          },
+          "response": []
+        },
+        {
+          "name": "My History",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals/my-history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals", "my-history"]
+            },
+            "description": "Historique des réservations de l'utilisateur connecté"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Rental (Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-06-10\",\n  \"endDate\": \"2026-06-15\",\n  \"customerName\": \"Test\",\n  \"carId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals"]
+            },
+            "description": "Test sans token — doit retourner 401"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rentals (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals"]
+            },
+            "description": "Liste toutes les locations — ADMIN ou MANAGER requis (utiliser Login Admin avant)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Rental Status (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals/{{rentalId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals", "{{rentalId}}", "status"]
+            },
+            "description": "Changer le statut (PENDING, ACTIVE, COMPLETED, CANCELLED) — ADMIN ou MANAGER"
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Rental (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals/{{rentalId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals", "{{rentalId}}", "status"]
+            },
+            "description": "Marquer une location comme terminée"
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Rental (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELLED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rentals/{{rentalId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rentals", "{{rentalId}}", "status"]
+            },
+            "description": "Annuler une location"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agencies",
+      "description": "Répertoire des agences — lecture publique",
+      "item": [
+        {
+          "name": "Get All Agencies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const agencies = pm.response.json();",
+                  "if (agencies.length > 0 && agencies[0].id) {",
+                  "    pm.collectionVariables.set('agencyId', agencies[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"]
+            },
+            "description": "Liste de toutes les agences (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agency Cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/{{agencyId}}/cars",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies", "{{agencyId}}", "cars"]
+            },
+            "description": "Voitures d'une agence spécifique (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Agency (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('agencyId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AutoRent Agadir\",\n  \"address\": \"Boulevard Hassan II\",\n  \"city\": \"Agadir\",\n  \"state\": \"Souss-Massa\",\n  \"phone\": \"+212 528-000-006\",\n  \"email\": \"agadir@autorent.ma\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"]
+            },
+            "description": "Créer une agence — ADMIN requis"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "description": "Entité Vehicle générique — lecture publique, écriture ADMIN/MANAGER",
+      "item": [
+        {
+          "name": "Get All Vehicles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const vehicles = pm.response.json();",
+                  "if (vehicles.length > 0 && vehicles[0].id) {",
+                  "    pm.collectionVariables.set('vehicleId', vehicles[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vehicles"]
+            },
+            "description": "Liste de tous les véhicules génériques (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('vehicleId', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Dacia\",\n  \"model\": \"Logan\",\n  \"year\": 2021,\n  \"registrationPlate\": \"98765-B-43\",\n  \"mileage\": 25000.0,\n  \"dailyRate\": 200.0,\n  \"status\": \"AVAILABLE\",\n  \"agencyId\": {{agencyId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vehicles"]
+            },
+            "description": "Créer un véhicule générique — ADMIN ou MANAGER requis"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Supprimer un véhicule générique — ADMIN ou MANAGER requis"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
