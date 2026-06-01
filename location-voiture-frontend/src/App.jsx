@@ -17,13 +17,16 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ManagerDashboard from './pages/ManagerDashboard';
 import ManagerRentals from './pages/ManagerRentals';
+import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
 
   if (!token) return <Navigate to="/login" />;
-  if (allowedRole && role !== allowedRole && role !== 'ROLE_ADMIN') return <Navigate to="/" />;
+  if (allowedRole && role !== allowedRole && role !== 'ROLE_ADMIN') {
+    return <Navigate to="/" />;
+  }
   return children;
 };
 
@@ -41,43 +44,29 @@ function App() {
         <Route path="/agencies" element={<Agencies />} />
 
         {/* Routes Client (Protected) */}
-        <Route path="/user/dashboard" element={
-          <ProtectedRoute>
-            <ClientDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/booking/:carId" element={
-          <ProtectedRoute>
-            <Booking />
-          </ProtectedRoute>
-        } />
-        <Route path="/my-rentals" element={
-          <ProtectedRoute>
-            <MyRentals />
-          </ProtectedRoute>
-        } />
+        <Route path="/user/dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
+        <Route path="/booking/:carId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+        <Route path="/my-rentals" element={<ProtectedRoute><MyRentals /></ProtectedRoute>} />
+        
+        {/* Route Profile */}
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
         {/* Routes Administration (Protected) */}
-        <Route path="/admin/dashboard" element={
-          <ProtectedRoute allowedRole="ADMIN">
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/cars" element={
-          <ProtectedRoute allowedRole="ADMIN">
-            <AdminCars />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/bookings" element={
-          <ProtectedRoute allowedRole="ADMIN">
-            <AdminBookings />
-          </ProtectedRoute>
-        } />
+        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/cars" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminCars /></ProtectedRoute>} />
+        <Route path="/admin/bookings" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminBookings /></ProtectedRoute>} />
 
-
-
-        <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-  <Route path="/manager/rentals" element={<ManagerRentals />} />
+        {/* Routes Manager (Protected) */}
+        <Route path="/manager/dashboard" element={
+            <ProtectedRoute allowedRole="ROLE_MANAGER">
+                <ManagerDashboard />
+            </ProtectedRoute>
+        } />
+        <Route path="/manager/rentals" element={
+            <ProtectedRoute allowedRole="ROLE_MANAGER">
+                <ManagerRentals />
+            </ProtectedRoute>
+        } />
       </Routes>
       <Footer />
     </Router>
