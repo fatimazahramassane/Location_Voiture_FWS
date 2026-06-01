@@ -46,7 +46,7 @@ const Login = () => {
                 if (data.role === 'ADMIN' || data.role === 'ROLE_ADMIN') {
                     navigate('/admin/dashboard');
                 } else {
-                    navigate('/cars');
+                    navigate('/user/dashboard');
                 }
             }, 1500);
 
