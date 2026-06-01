@@ -61,8 +61,7 @@ function Booking() {
       });
 
       if (response.ok) {
-        alert("Réservation envoyée avec succès !");
-        navigate('/cars');
+        navigate('/my-rentals');
       } else {
         const error = await response.json();
         alert("Erreur de réservation : " + (error.message || "Accès refusé"));
