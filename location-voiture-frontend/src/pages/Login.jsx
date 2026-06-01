@@ -41,6 +41,7 @@ const Login = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.username);
             localStorage.setItem('role', data.role);
+            window.dispatchEvent(new Event('authChange'));
 
             setTimeout(() => {
                 if (data.role === 'ADMIN' || data.role === 'ROLE_ADMIN') {
