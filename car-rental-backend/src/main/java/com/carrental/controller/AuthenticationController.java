@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Authentication", description = "API pour l'authentification et les utilisateurs")
@@ -39,5 +38,11 @@ public class AuthenticationController {
     @Operation(summary = "Récupérer le profil de l'utilisateur connecté")
     public ResponseEntity<AppUser> getProfile(Authentication authentication) {
         return ResponseEntity.ok(authService.getProfile(authentication));
+    }
+
+    @PutMapping("/api/users/profile")
+    @Operation(summary = "Mettre à jour le profil")
+    public ResponseEntity<AppUser> updateProfile(Authentication authentication, @RequestBody AppUser updatedUser) {
+        return ResponseEntity.ok(authService.updateProfile(authentication, updatedUser));
     }
 }

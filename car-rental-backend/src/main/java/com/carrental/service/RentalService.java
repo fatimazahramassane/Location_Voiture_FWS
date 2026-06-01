@@ -2,8 +2,8 @@ package com.carrental.service;
 
 import com.carrental.dto.RentalRequest;
 import com.carrental.dto.RentalResponse;
-import com.carrental.dto.UpdateStatusRequest;
 import org.springframework.security.core.Authentication;
+import com.carrental.dto.UpdateStatusRequest;
 
 import java.util.List;
 

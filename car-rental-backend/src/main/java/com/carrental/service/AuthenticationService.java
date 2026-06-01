@@ -13,4 +13,5 @@ public interface AuthenticationService {
     AuthResponse login(LoginRequest request);
 
     AppUser getProfile(Authentication authentication);
+    AppUser updateProfile(Authentication authentication, AppUser updatedUser);
 }

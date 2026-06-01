@@ -52,6 +52,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.save(user);
     }
 
+
+    @Override
+    @Transactional
+    public AppUser updateProfile(Authentication authentication, AppUser updatedUser) {
+        AppUser user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
+        return userRepository.save(user);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
