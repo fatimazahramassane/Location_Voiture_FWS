@@ -19,7 +19,6 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
 
         try {
             const response = await fetch('http://localhost:8080/api/auth/login', {
@@ -36,20 +35,24 @@ const Login = () => {
                 throw new Error(data.message || 'Identifiants incorrects');
             }
 
-            setSuccess('Connexion réussie !');
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.username);
             localStorage.setItem('role', data.role);
+            localStorage.setItem('agencyName', data.agencyName || ''); 
+
             window.dispatchEvent(new Event('authChange'));
 
             setTimeout(() => {
-                if (data.role === 'ADMIN' || data.role === 'ROLE_ADMIN') {
+                const role = data.role;
+                if (role === 'ROLE_ADMIN') {
                     navigate('/admin/dashboard');
+                } else if (role === 'ROLE_MANAGER') {
+                    navigate('/manager/dashboard');
                 } else {
                     navigate('/user/dashboard');
                 }
-            }, 1500);
+            }, 1000);
 
         } catch (err) {
             setError(err.message);

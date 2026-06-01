@@ -15,6 +15,8 @@ import MyRentals from './pages/MyRentals';
 import Agencies from './pages/Agencies';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ManagerDashboard from './pages/ManagerDashboard';
+import ManagerRentals from './pages/ManagerRentals';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
   const token = localStorage.getItem('token');
@@ -71,6 +73,11 @@ function App() {
             <AdminBookings />
           </ProtectedRoute>
         } />
+
+
+
+        <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+  <Route path="/manager/rentals" element={<ManagerRentals />} />
       </Routes>
       <Footer />
     </Router>
