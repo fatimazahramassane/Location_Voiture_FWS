@@ -21,7 +21,6 @@ function Cars() {
   };
 
   useEffect(() => {
-    // تصحيح: استعملنا url المتغير هنا
     const url = agencyId 
       ? `http://localhost:8080/api/agencies/${agencyId}/cars` 
       : 'http://localhost:8080/api/cars';
@@ -82,7 +81,7 @@ function Cars() {
         </div>
       ) : (
         agencyId ? (
-          // List View (بلا تصاور)
+          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             {filteredCars.map((car) => (
               <div key={car.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: 'var(--card-background)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
@@ -98,7 +97,7 @@ function Cars() {
             ))}
           </div>
         ) : (
-          // Grid View (بالتصاور)
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
             {filteredCars.slice(0, 20).map((car, index) => (
               <div key={car.id} style={{ background: 'var(--card-background)', borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
