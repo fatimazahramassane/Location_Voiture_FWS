@@ -1,0 +1,156 @@
+.clic-auth-bg {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.clic-auth-overlay {
+    width: 100%;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.clic-auth-header {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.clic-auth-header h1 {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
+.clic-brand-logo {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ff4d4d;
+}
+
+.clic-auth-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+.clic-auth-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.clic-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    padding: 0 16px;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+    height: 50px;
+}
+
+.clic-input-icon {
+    font-size: 18px;
+    color: #555555;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.clic-input-wrapper input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    height: 100%;
+    font-size: 15px;
+    outline: none;
+    color: #222222;
+}
+
+.clic-input-wrapper input::placeholder {
+    color: #777777;
+}
+
+.clic-auth-actions {
+    grid-column: span 2;
+    margin-top: 8px;
+}
+
+.clic-btn-primary.full-width-btn {
+    width: 100%;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    height: 50px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.clic-btn-primary.full-width-btn:hover {
+    background: #e04343;
+}
+
+.clic-auth-redirect {
+    grid-column: span 2;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.clic-auth-redirect a {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.error-message {
+    grid-column: span 2;
+    text-align: center;
+    color: #ff4d4d;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.success-message {
+    grid-column: span 2;
+    text-align: center;
+    color: #2ec4b6;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .clic-auth-form {
+        grid-template-columns: 1fr;
+    }
+    .clic-auth-actions, .clic-auth-redirect, .error-message, .success-message {
+        grid-column: span 1;
+    }
+    .clic-auth-card {
+        max-width: 100%;
+        padding: 24px;
+    }
+}
