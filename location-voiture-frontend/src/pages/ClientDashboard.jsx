@@ -39,8 +39,8 @@ function ClientDashboard() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--home-bg)', color: 'var(--home-text)', padding: '120px 10% 60px 10%' }}>
       <div style={{ marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '10px' }}>Mon Espace Client</h1>
-        <p style={{ color: 'var(--home-desc)' }}>Historique de vos réservations et statut de vos demandes.</p>
+        <h1 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '10px' }}>Bienvenue chez vous, cher client ! </h1>
+        <p style={{ color: 'var(--home-desc)' }}>C'est un plaisir de vous retrouver. Votre historique de route est ici, prêt à vous rappeler vos meilleurs trajets.</p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

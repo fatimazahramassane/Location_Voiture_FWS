@@ -1,10 +1,10 @@
 package com.carrental.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,11 @@ public class Agency {
     @NotBlank(message = "Agency name is required")
     @Column(nullable = false, unique = true)
     private String name;
+
+    @OneToOne
+    @JoinColumn(name = "manager_id", nullable = true)
+    @JsonIgnoreProperties({"agency"})
+    private AppUser manager;
 
     @NotBlank(message = "Address is required")
     @Column(nullable = false)

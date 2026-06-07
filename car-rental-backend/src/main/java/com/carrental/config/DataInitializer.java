@@ -87,10 +87,15 @@ public class DataInitializer implements CommandLineRunner {
     // -------------------------------------------------------
 
     private Map<String, Agency> seedAgencies() {
+        AppUser youssef = userRepository.findByUsername("manager")
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+
         Map<String, Agency> result = new LinkedHashMap<>();
+
         for (Map.Entry<String, String[]> entry : CITY_AGENCIES.entrySet()) {
             String city = entry.getKey();
             String[] info = entry.getValue();
+
             Agency agency = Agency.builder()
                     .name(info[0])
                     .city(info[1])
@@ -99,9 +104,15 @@ public class DataInitializer implements CommandLineRunner {
                     .phone(info[4])
                     .email(info[5])
                     .build();
+
+
+            if (city.equals("Casablanca")) {
+                agency.setManager(youssef);
+            }
+
             result.put(city, agencyRepository.save(agency));
         }
-        log.info("🏢  Seeded {} agencies", result.size());
+        log.info("🏢  Seeded {} agencies with manager assigned", result.size());
         return result;
     }
 

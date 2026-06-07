@@ -16,7 +16,7 @@ import Agencies from './pages/Agencies';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ManagerDashboard from './pages/ManagerDashboard';
-import ManagerRentals from './pages/ManagerRentals';
+import AgencyReservations from './pages/AgencyReservations';
 import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -43,28 +43,28 @@ function App() {
         <Route path="/car-details/:carId" element={<CarDetails />} />
         <Route path="/agencies" element={<Agencies />} />
 
-        {/* Routes Client (Protected) */}
+        {/* Routes Client */}
         <Route path="/user/dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
         <Route path="/booking/:carId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
         <Route path="/my-rentals" element={<ProtectedRoute><MyRentals /></ProtectedRoute>} />
-        
-        {/* Route Profile */}
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
-        {/* Routes Administration (Protected) */}
+        {/* Routes Administration */}
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/cars" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminCars /></ProtectedRoute>} />
         <Route path="/admin/bookings" element={<ProtectedRoute allowedRole="ROLE_ADMIN"><AdminBookings /></ProtectedRoute>} />
 
-        {/* Routes Manager (Protected) */}
+        {/* Routes Manager */}
         <Route path="/manager/dashboard" element={
             <ProtectedRoute allowedRole="ROLE_MANAGER">
                 <ManagerDashboard />
             </ProtectedRoute>
         } />
-        <Route path="/manager/rentals" element={
+
+        {/* Route des réservations par agence */}
+        <Route path="/manager/reservations/:agencyId" element={
             <ProtectedRoute allowedRole="ROLE_MANAGER">
-                <ManagerRentals />
+                <AgencyReservations />
             </ProtectedRoute>
         } />
       </Routes>

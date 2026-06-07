@@ -63,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AppUser user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        return new AuthResponse(token, user.getUsername(), user.getRole().name());
+        return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId());
     }
 
     @Override
@@ -72,4 +72,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
+
+
+    @Override
+    public AppUser updateProfile(Authentication authentication, AppUser updatedUser) {
+        AppUser user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé"));
+
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+        return userRepository.save(user);
+    }
+
 }

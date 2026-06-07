@@ -243,4 +243,36 @@ public class RentalServiceImpl implements RentalService {
 
         return mapToResponse(rentalRepository.save(rental));
     }
+
+    @Override
+    public List<RentalResponse> getRentalsByAgency(Long agencyId) {
+
+        List<Rental> rentals = rentalRepository.findByAgencyId(agencyId);
+
+        return rentals.stream()
+                .map(this::mapToRentalResponse)
+                .collect(Collectors.toList());
+    }
+
+    private RentalResponse mapToRentalResponse(Rental rental) {
+        RentalResponse res = new RentalResponse();
+        res.setId(rental.getId());
+        res.setStartDate(rental.getStartDate());
+        res.setEndDate(rental.getEndDate());
+        res.setStatus(rental.getStatus());
+        res.setTotalCost(rental.getTotalCost());
+        res.setCustomerName(rental.getCustomerName());
+        res.setCustomerEmail(rental.getCustomerEmail());
+        res.setCustomerPhone(rental.getCustomerPhone());
+        res.setCustomerLicenseNumber(rental.getCustomerLicenseNumber());
+
+        if (rental.getCar() != null) {
+            res.setCarModel(rental.getCar().getBrand() + " " + rental.getCar().getModel());
+            if (rental.getCar().getAgency() != null) {
+                res.setAgencyName(rental.getCar().getAgency().getName());
+            }
+        }
+        return res;
+    }
+
 }

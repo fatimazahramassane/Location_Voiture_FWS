@@ -39,8 +39,10 @@ function Cars() {
     .catch(() => setLoading(false));
   }, [agencyId]);
 
+  const isFiltered = searchTerm !== '' || selectedFuel !== 'ALL' || selectedTransmission !== 'ALL' || maxPrice !== 1000;
+
   const filteredCars = cars.filter((car) => {
-    const matchesSearch = car.brand.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           car.model.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFuel = selectedFuel === 'ALL' || car.fuelType === selectedFuel;
     const matchesTransmission = selectedTransmission === 'ALL' || car.transmission === selectedTransmission;
@@ -81,10 +83,15 @@ function Cars() {
         </div>
       ) : (
         agencyId ? (
-          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             {filteredCars.map((car) => (
               <div key={car.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: 'var(--card-background)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+
+                {!isFiltered && !agencyId &&(
+                    <div style={{ width: '80px', height: '60px', marginRight: '15px' }}>
+                        <img src={getCarImage(car.brand, 0)} alt={car.model} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                    </div>
+                )}
                 <div>
                   <h3 style={{ margin: '0 0 5px 0' }}>{car.brand} {car.model}</h3>
                   <p style={{ margin: 0, fontSize: '14px', color: 'var(--home-desc)' }}>{car.fuelType} • {car.transmission}</p>
@@ -97,13 +104,14 @@ function Cars() {
             ))}
           </div>
         ) : (
-          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
             {filteredCars.slice(0, 20).map((car, index) => (
               <div key={car.id} style={{ background: 'var(--card-background)', borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ height: '220px' }}>
-                  <img src={getCarImage(car.brand, index)} alt={car.model} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
+                {!isFiltered && (
+                  <div style={{ height: '220px' }}>
+                    <img src={getCarImage(car.brand, index)} alt={car.model} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
                 <div style={{ padding: '25px', flexGrow: '1', display: 'flex', flexDirection: 'column' }}>
                   <span style={{ fontSize: '13px', color: '#f59e0b', fontWeight: '700' }}>{car.brand}</span>
                   <h3 style={{ fontSize: '22px', margin: '0 0 10px 0', color: 'var(--home-text)' }}>{car.model}</h3>

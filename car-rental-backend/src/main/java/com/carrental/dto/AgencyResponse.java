@@ -16,4 +16,5 @@ public class AgencyResponse {
     private String state;
     private String phone;
     private String email;
+    private Long managerId;
 }

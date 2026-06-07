@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FaCar, FaClipboardList, FaPlus, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaCar, FaClipboardList, FaPlus, FaTrash, FaCheck, FaTimes, FaEdit } from 'react-icons/fa';
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('cars');
   const [cars, setCars] = useState([]);
   const [rentals, setRentals] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingCar, setEditingCar] = useState(null);
 
   const [newCar, setNewCar] = useState({
     brand: '', model: '', year: 2026, dailyRate: '',
@@ -35,9 +37,9 @@ function AdminDashboard() {
     e.preventDefault();
     await fetch('http://localhost:8080/api/cars', {
       method: 'POST',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(newCar)
     });
@@ -53,17 +55,77 @@ function AdminDashboard() {
     fetchData();
   };
 
+  const handleEditClick = (car) => {
+    setEditingCar({ ...car });
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateCar = async (e) => {
+    e.preventDefault();
+    if (!editingCar) return;
+    await fetch(`http://localhost:8080/api/cars/${editingCar.id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(editingCar)
+    });
+    setIsEditModalOpen(false);
+    setEditingCar(null);
+    fetchData();
+  };
+
   const handleUpdateRentalStatus = async (rentalId, newStatus) => {
     await fetch(`http://localhost:8080/api/rentals/${rentalId}/status`, {
       method: 'PUT',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ status: newStatus })
     });
     fetchData();
   };
+
+
+  const renderCarFormFields = (carData, setCarData, isEdit = false) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <input type="text" placeholder="Marque" required value={carData.brand} onChange={e => setCarData({...carData, brand: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="text" placeholder="Modèle" required value={carData.model} onChange={e => setCarData({...carData, model: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="number" placeholder="Année" required value={carData.year} onChange={e => setCarData({...carData, year: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="text" placeholder="Numéro VIN" required value={carData.vin} onChange={e => setCarData({...carData, vin: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="text" placeholder="Immatriculation" required value={carData.registrationPlate} onChange={e => setCarData({...carData, registrationPlate: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="number" placeholder="Kilométrage" required value={carData.mileage} onChange={e => setCarData({...carData, mileage: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="number" placeholder="Prix par jour (DH)" required value={carData.dailyRate} onChange={e => setCarData({...carData, dailyRate: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+      <input type="text" placeholder="Couleur" required value={carData.color} onChange={e => setCarData({...carData, color: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
+
+      <select value={carData.fuelType} onChange={e => setCarData({...carData, fuelType: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
+        <option value="GASOLINE">Gasoline</option>
+        <option value="DIESEL">Diesel</option>
+        <option value="ELECTRIC">Electric</option>
+        <option value="HYBRID">Hybrid</option>
+      </select>
+
+      <select value={carData.transmission} onChange={e => setCarData({...carData, transmission: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
+        <option value="MANUAL">Manuelle</option>
+        <option value="AUTOMATIC">Automatique</option>
+      </select>
+
+      <select value={carData.status} onChange={e => setCarData({...carData, status: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
+        <option value="AVAILABLE">AVAILABLE</option>
+        <option value="RENTED">RENTED</option>
+        <option value="MAINTENANCE">MAINTENANCE</option>
+        <option value="OUT_OF_SERVICE">OUT_OF_SERVICE</option>
+      </select>
+
+      {!isEdit && (
+        <button type="submit" style={{ background: '#f59e0b', color: '#0f172a', padding: '14px', borderRadius: '10px', border: 'none', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <FaPlus /> Ajouter à la flotte
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <div style={{
@@ -76,7 +138,7 @@ function AdminDashboard() {
     }}>
       <div style={{ marginBottom: '40px' }}>
         <h1 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '10px' }}>
-          Tableau de Bord Administration
+          Pilotez votre flotte
         </h1>
         <p style={{ color: 'var(--home-desc)', margin: 0 }}>
           Gestion de la flotte de véhicules, des agences et approbation des contrats de location.
@@ -84,7 +146,7 @@ function AdminDashboard() {
       </div>
 
       <div style={{ display: 'flex', gap: '15px', marginBottom: '30px' }}>
-        <button 
+        <button
           onClick={() => setActiveTab('cars')}
           style={{
             display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '12px',
@@ -95,7 +157,7 @@ function AdminDashboard() {
         >
           <FaCar /> Gestion Flotte ({cars.length})
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('rentals')}
           style={{
             display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '12px',
@@ -115,39 +177,7 @@ function AdminDashboard() {
             border: '1px solid var(--border-color)', borderRadius: '24px', padding: '30px', height: 'fit-content'
           }}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: '800' }}>Ajouter un véhicule</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <input type="text" placeholder="Marque" required value={newCar.brand} onChange={e => setNewCar({...newCar, brand: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="text" placeholder="Modèle" required value={newCar.model} onChange={e => setNewCar({...newCar, model: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="number" placeholder="Année" required value={newCar.year} onChange={e => setNewCar({...newCar, year: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="text" placeholder="Numéro VIN" required value={newCar.vin} onChange={e => setNewCar({...newCar, vin: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="text" placeholder="Immatriculation" required value={newCar.registrationPlate} onChange={e => setNewCar({...newCar, registrationPlate: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="number" placeholder="Kilométrage" required value={newCar.mileage} onChange={e => setNewCar({...newCar, mileage: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="number" placeholder="Prix par jour (DH)" required value={newCar.dailyRate} onChange={e => setNewCar({...newCar, dailyRate: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              <input type="text" placeholder="Couleur" required value={newCar.color} onChange={e => setNewCar({...newCar, color: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }} />
-              
-              <select value={newCar.fuelType} onChange={e => setNewCar({...newCar, fuelType: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
-                <option value="GASOLINE">Gasoline</option>
-                <option value="DIESEL">Diesel</option>
-                <option value="ELECTRIC">Electric</option>
-                <option value="HYBRID">Hybrid</option>
-              </select>
-
-              <select value={newCar.transmission} onChange={e => setNewCar({...newCar, transmission: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
-                <option value="MANUAL">Manuelle</option>
-                <option value="AUTOMATIC">Automatique</option>
-              </select>
-
-              <select value={newCar.status} onChange={e => setNewCar({...newCar, status: e.target.value})} style={{ padding: '12px', borderRadius: '8px', background: 'var(--card-inline)', border: '1px solid var(--border-color)', color: 'var(--home-text)' }}>
-                <option value="AVAILABLE">AVAILABLE</option>
-                <option value="RENTED">RENTED</option>
-                <option value="MAINTENANCE">MAINTENANCE</option>
-                <option value="OUT_OF_SERVICE">OUT_OF_SERVICE</option>
-              </select>
-
-              <button type="submit" style={{ background: '#f59e0b', color: '#0f172a', padding: '14px', borderRadius: '10px', border: 'none', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <FaPlus /> Ajouter à la flotte
-              </button>
-            </div>
+            {renderCarFormFields(newCar, setNewCar, false)}
           </form>
 
           <div style={{ flex: '2', minWidth: '500px', background: 'var(--card-background)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '30px', overflowX: 'auto' }}>
@@ -158,7 +188,7 @@ function AdminDashboard() {
                   <th style={{ paddingBottom: '12px' }}>Immatriculation</th>
                   <th style={{ paddingBottom: '12px' }}>Prix/J</th>
                   <th style={{ paddingBottom: '12px' }}>Statut</th>
-                  <th style={{ paddingBottom: '12px' }}>Action</th>
+                  <th style={{ paddingBottom: '12px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,7 +202,10 @@ function AdminDashboard() {
                         {car.status}
                       </span>
                     </td>
-                    <td style={{ padding: '16px 0' }}>
+                    <td style={{ padding: '16px 0', display: 'flex', gap: '10px' }}>
+                      <button onClick={() => handleEditClick(car)} style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer' }}>
+                        <FaEdit />
+                      </button>
                       <button onClick={() => handleDeleteCar(car.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
                         <FaTrash />
                       </button>
@@ -234,6 +267,39 @@ function AdminDashboard() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {isEditModalOpen && editingCar && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'var(--card-background)', borderRadius: '24px', padding: '30px',
+            width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto',
+            border: '1px solid var(--border-color)'
+          }}>
+            <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: '800' }}>Modifier le véhicule</h3>
+            <form onSubmit={handleUpdateCar}>
+              {renderCarFormFields(editingCar, setEditingCar, true)}
+              <div style={{ display: 'flex', gap: '15px', marginTop: '25px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setIsEditModalOpen(false)} style={{
+                  padding: '12px 20px', borderRadius: '10px', border: '1px solid var(--border-color)',
+                  background: 'transparent', color: 'var(--home-text)', cursor: 'pointer', fontWeight: '700'
+                }}>
+                  Annuler
+                </button>
+                <button type="submit" style={{
+                  background: '#f59e0b', color: '#0f172a', padding: '12px 20px', borderRadius: '10px',
+                  border: 'none', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
+                }}>
+                  <FaCheck /> Enregistrer les modifications
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

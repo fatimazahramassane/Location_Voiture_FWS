@@ -40,4 +40,14 @@ public class AuthenticationController {
     public ResponseEntity<AppUser> getProfile(Authentication authentication) {
         return ResponseEntity.ok(authService.getProfile(authentication));
     }
+
+
+    @PutMapping("/api/users/profile")
+    @Operation(summary = "Mettre à jour le profil de l'utilisateur")
+    public ResponseEntity<AppUser> updateProfile(
+            Authentication authentication,
+            @RequestBody AppUser updatedUser) {
+
+        return ResponseEntity.ok(authService.updateProfile(authentication, updatedUser));
+    }
 }

@@ -27,4 +27,8 @@ public interface AgencyRepository extends JpaRepository<Agency, Long> {
 
     @Query("SELECT a FROM Agency a LEFT JOIN FETCH a.cars WHERE a.id = :id")
     Optional<Agency> findByIdWithCars(@Param("id") Long id);
+
+
+
+    Optional<Agency> findByManagerId(Long managerId);
 }

@@ -57,4 +57,9 @@ public class AppUser {
         ROLE_ADMIN,
         ROLE_MANAGER
     }
+
+
+    @OneToOne(mappedBy = "manager")
+    @JsonIgnore
+    private Agency agency;
 }

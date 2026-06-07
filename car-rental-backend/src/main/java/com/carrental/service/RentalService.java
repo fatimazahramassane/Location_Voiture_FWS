@@ -26,4 +26,8 @@ public interface RentalService {
     List<RentalResponse> getMyRentals(Authentication authentication);
 
     RentalResponse updateStatus(Long id, UpdateStatusRequest request);
+
+
+
+    List<RentalResponse> getRentalsByAgency(Long agencyId);
 }

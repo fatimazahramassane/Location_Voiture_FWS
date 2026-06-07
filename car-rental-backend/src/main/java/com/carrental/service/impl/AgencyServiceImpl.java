@@ -4,10 +4,12 @@ import com.carrental.dto.AgencyRequest;
 import com.carrental.dto.AgencyResponse;
 import com.carrental.dto.CarResponse;
 import com.carrental.entity.Agency;
+import com.carrental.entity.AppUser;
 import com.carrental.entity.Car;
 import com.carrental.exception.ResourceAlreadyExistsException;
 import com.carrental.exception.ResourceNotFoundException;
 import com.carrental.repository.AgencyRepository;
+import com.carrental.repository.AppUserRepository;
 import com.carrental.repository.CarRepository;
 import com.carrental.service.AgencyService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +23,8 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class AgencyServiceImpl implements AgencyService {
-
     private final AgencyRepository agencyRepository;
+    private final AppUserRepository appUserRepository;
     private final CarRepository carRepository;
 
     private Agency findAgencyOrThrow(Long id) {
@@ -103,4 +105,33 @@ public class AgencyServiceImpl implements AgencyService {
 
         return mapToResponse(agencyRepository.save(agency));
     }
+
+    @Override
+    public Agency assignManagerToAgency(Long agencyId, Long managerId) {
+        Agency agency = agencyRepository.findById(agencyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agency not found"));
+
+        AppUser manager = appUserRepository.findById(managerId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        agency.setManager(manager);
+        return agencyRepository.save(agency);
+    }
+
+
+    @Override
+    public AgencyResponse getAgencyByManagerId(Long managerId) {
+        Agency agency = agencyRepository.findByManagerId(managerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Manager has no agency assigned"));
+        return mapToResponse(agency);
+    }
+
+
+    @Override
+    public String getAgencyNameById(Long id) {
+        return agencyRepository.findById(id)
+                .map(Agency::getName)
+                .orElse("Agence inconnue");
+    }
+
 }

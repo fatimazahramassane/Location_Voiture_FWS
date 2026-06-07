@@ -55,4 +55,11 @@ public class RentalController {
             @Valid @RequestBody UpdateStatusRequest request) {
         return ResponseEntity.ok(rentalService.updateStatus(id, request));
     }
+
+
+    @GetMapping("/agency/{agencyId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<RentalResponse>> getRentalsByAgency(@PathVariable Long agencyId) {
+        return ResponseEntity.ok(rentalService.getRentalsByAgency(agencyId));
+    }
 }

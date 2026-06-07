@@ -3,6 +3,7 @@ package com.carrental.controller;
 import com.carrental.dto.AgencyRequest;
 import com.carrental.dto.AgencyResponse;
 import com.carrental.dto.CarResponse;
+import com.carrental.entity.Agency;
 import com.carrental.service.AgencyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,5 +43,27 @@ public class AgencyController {
     public ResponseEntity<AgencyResponse> createAgency(@Valid @RequestBody AgencyRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(agencyService.createAgency(request));
+    }
+
+
+
+    @PostMapping("/{agencyId}/manager/{managerId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<Agency> assignManager(@PathVariable Long agencyId, @PathVariable Long managerId) {
+        return ResponseEntity.ok(agencyService.assignManagerToAgency(agencyId, managerId));
+    }
+
+
+    @GetMapping("/manager/{managerId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<AgencyResponse> getAgencyByManager(@PathVariable Long managerId) {
+        return ResponseEntity.ok(agencyService.getAgencyByManagerId(managerId));
+    }
+
+
+    @GetMapping("/{id}/name")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> getAgencyName(@PathVariable Long id) {
+        return ResponseEntity.ok(agencyService.getAgencyNameById(id));
     }
 }
